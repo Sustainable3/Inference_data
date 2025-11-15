@@ -2,9 +2,9 @@
 Data for inference
 
 ## Scope
-- [QGIS project](Sustainable3/Inference_data/Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
-- [spreadsheet with URLs for Wzgórze Mickiewicza](Sustainable3/Inference_data/WzgórzeMickiewicza19-24.csv)
-- [spreadsheet with URLs for whole interior](Sustainable3/Inference_data/ggs19-24wew.csv)
+- [QGIS project](Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
+- [spreadsheet with URLs for Wzgórze Mickiewicza](WzgórzeMickiewicza19-24.csv)
+- [spreadsheet with URLs for whole interior](ggs19-24wew.csv)
 - GML layers
 
 ## Fine details
