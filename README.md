@@ -15,5 +15,8 @@ Data for inference
 - for a few years extra small areas are provided (geo-narrow)
 - see [Geoportal - usługi](https://www.geoportal.gov.pl/pl/usluga/)
 
+<img width="703" height="629" alt="ggs" src="https://github.com/user-attachments/assets/17092606-a2e9-476d-a96e-af4c4863ba74" />
+
+
 ## Credits
 [Geoportal - Główny Urząd Geodezji i Kartografii](https://www.geoportal.gov.pl)
