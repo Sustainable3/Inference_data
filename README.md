@@ -5,6 +5,7 @@ Data for inference
 - [QGIS project](Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
 - [spreadsheet with URLs for Wzgórze Mickiewicza](WzgórzeMickiewicza19-24.csv)
 - [spreadsheet with URLs for whole interior](ggs19-24wew.csv)
+- [Script for downloading images from URLs](downloader.py)
 - GML layers
 
 ## Fine details
