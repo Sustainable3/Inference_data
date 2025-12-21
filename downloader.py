@@ -5,7 +5,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 # Set up a proper dataset path
-MICKIEWICZ_AREA = "WzgórzeMickiewicza19-24.csv"
+MICKIEWICZ_AREA = "WzgorzeMickiewicza19-24.csv"
 WHOLE_AREA = "ggs19-24wew.csv"
 OUTPUT_DIR = "downloaded_images"
 TIMEOUT = 30
@@ -47,3 +47,4 @@ def download_file(url, output_folder):
 
 for url in urls:
     download_file(url, OUTPUT_DIR)
+
