@@ -21,3 +21,5 @@ Data for inference
 
 ## Credits
 [Geoportal - Główny Urząd Geodezji i Kartografii](https://www.geoportal.gov.pl)
+
+> Obliczenia wykonano z wykorzystaniem komputerów Centrum Informatycznego Trójmiejskiej Akademickiej Sieci Komputerowej (Computations were carried out using the computers of Centre of Informatics Tricity Academic Supercomputer & Network).
