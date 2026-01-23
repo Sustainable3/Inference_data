@@ -1,14 +1,14 @@
 # Inference_data
-Data for inference
+Data for inference - high-res orthophotos
 
 ## Scope
-- [QGIS project](Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
+- [QGIS project](QGIS_project/Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
 - [spreadsheet with URLs for Wzgórze Mickiewicza](WzgórzeMickiewicza19-24.csv)
 - [spreadsheet with URLs for whole interior](ggs19-24wew.csv)
-- [spreadsheet with URLs for selected imgs in whole interior](new_ggs_50_imgs.csv)
-- [spreadsheet with URLs for selected imgs covering 3City area with nearby extras](new_ggs_125_imgs.csv)
-- [Script for downloading images from URLs](downloader.py)
-- GML layers
+- [spreadsheet with URLs for selected, valid imgs in whole interior](new_ggs_50_imgs.csv)
+- [spreadsheet with URLs for 3City area with nearby extras](metrop19-24.csv)
+- [spreadsheet with URLs for selected, valid imgs covering 3City area with nearby extras](new_ggs_125_imgs.csv)
+- [Script for downloading images from URLs](imagery_downloader.py)
 
 ## Fine details
 - *Mickiewicz* - godło: N-34-50-C-c-4-4
@@ -18,8 +18,8 @@ Data for inference
 - for a few years extra small areas are provided (geo-narrow)
 - see [Geoportal - usługi](https://www.geoportal.gov.pl/pl/usluga/)
 
-<img width="703" height="629" alt="ggs" src="https://github.com/user-attachments/assets/17092606-a2e9-476d-a96e-af4c4863ba74" />
-
+## Depiction
+![Orthophoto indices](image.png)
 
 ## Credits
 [Geoportal - Główny Urząd Geodezji i Kartografii](https://www.geoportal.gov.pl)
