@@ -9,6 +9,7 @@ Data for inference - high-res orthophotos
 - [spreadsheet with URLs for 3City area with nearby extras](acquisition/metrop19-24.csv)
 - [spreadsheet with URLs for selected, valid imgs covering 3City area with nearby extras](acquisition/new_ggs_125_imgs.csv)
 - [Python script for downloading images from URLs](acquisition/imagery_downloader.py) with a [SLURM script](acquisition/job_d_imgs.sh)
+- [Python script for splitting imgs into chunks and scaling](preprocessing/img_preprocessing.py) with a [SLURM script](preprocessing/job_split_imgs.sh)
 
 ## Fine details
 - *Mickiewicz* - godło: N-34-50-C-c-4-4
