@@ -2,13 +2,13 @@
 Data for inference - high-res orthophotos
 
 ## Scope
-- [QGIS project](QGIS_project/Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
-- [spreadsheet with URLs for Wzgórze Mickiewicza](WzgórzeMickiewicza19-24.csv)
-- [spreadsheet with URLs for whole interior](ggs19-24wew.csv)
-- [spreadsheet with URLs for selected, valid imgs in whole interior](new_ggs_50_imgs.csv)
-- [spreadsheet with URLs for 3City area with nearby extras](metrop19-24.csv)
-- [spreadsheet with URLs for selected, valid imgs covering 3City area with nearby extras](new_ggs_125_imgs.csv)
-- [Python script for downloading images from URLs](imagery_downloader.py) with a [SLURM script](job_d_imgs.sh)
+- [QGIS project](acquisition/QGIS_project/Skorowidze_Ortofotomapy_19-24_na_obszarze_3City.qgz)
+- [spreadsheet with URLs for Wzgórze Mickiewicza](acquisition/WzgórzeMickiewicza19-24.csv)
+- [spreadsheet with URLs for whole interior](acquisition/ggs19-24wew.csv)
+- [spreadsheet with URLs for selected, valid imgs in whole interior](acquisition/new_ggs_50_imgs.csv)
+- [spreadsheet with URLs for 3City area with nearby extras](acquisition/metrop19-24.csv)
+- [spreadsheet with URLs for selected, valid imgs covering 3City area with nearby extras](acquisition/new_ggs_125_imgs.csv)
+- [Python script for downloading images from URLs](acquisition/imagery_downloader.py) with a [SLURM script](acquisition/job_d_imgs.sh)
 
 ## Fine details
 - *Mickiewicz* - godło: N-34-50-C-c-4-4
