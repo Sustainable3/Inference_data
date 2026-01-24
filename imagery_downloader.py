@@ -1,5 +1,5 @@
 '''
-Docstring for panels.imagery_downloader
+Docstring for imagery_downloader
 
 download ortophotos from csv file
 
