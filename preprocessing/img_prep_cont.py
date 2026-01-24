@@ -17,6 +17,7 @@ from multiprocessing import Pool, cpu_count
 from PIL import Image
 
 
+Image.MAX_IMAGE_PIXELS = None
 os.environ['OMP_NUM_THREADS'] = '1'
 os.environ['OPENBLAS_NUM_THREADS'] = '1'
 os.environ['MKL_NUM_THREADS'] = '1'
@@ -27,8 +28,10 @@ os.environ['NUMEXPR_NUM_THREADS'] = '1'
 INPUT_FOLDER = './imagery125'
 OUTPUT_FOLDER = './imagery125_640px'
 LOG_FILE_PATH = './slurm-21237230.out'
-OUTPUT_FOLDER = './imagery125_640px_2'
-LOG_FILE_PATH = './slurm-21237263.out'
+# OUTPUT_FOLDER = './imagery125_640px_2'
+# LOG_FILE_PATH = './slurm-21237263.out'
+# LOG_FILE_PATH = 'preprocessing/slurm-21237263.out'
+# LOG_FILE_PATH = 'preprocessing/slurm-21237230.out'
 PREFIXES_SMALL = ('2019', '2020', '2021', '2023') 
 SIZE_SMALL = 640
 SIZE_LARGE = 3200
@@ -139,11 +142,15 @@ def main():
     normal_files = []
     
     for f_path in pending_files:
-        size_mb = os.path.getsize(f_path) / (1024 * 1024)
-        if size_mb > HUGE_FILE_THRESHOLD_MB:
-            huge_files.append(f_path)
-        else:
-            normal_files.append(f_path)
+        try:
+            with Image.open(f_path) as img:
+                width, height = img.size                
+                if width > 39000 or height > 39000:
+                    huge_files.append(f_path)
+                else:
+                    normal_files.append(f_path)
+        except Exception as e:
+            logging.error(f"Could not read headers for {f_path}: {e}")
 
     logging.info(f"Queue Status: {len(normal_files)} normal files, {len(huge_files)} HUGE files.")
 
@@ -154,18 +161,17 @@ def main():
 
     if normal_files:
         logging.info(f"Processing {len(normal_files)} normal files with {MAX_WORKERS} workers...")
-        with Pool(processes=MAX_WORKERS, maxtasksperchild=7) as pool:
+        with Pool(processes=MAX_WORKERS, maxtasksperchild=6) as pool:
             for result in pool.imap_unordered(process_single_image, normal_files):
                 logging.info(result)
 
     if huge_files:
         logging.info("-" * 80)
-        logging.info(f"Processing {len(huge_files)} HUGE files sequentially to save RAM...")
-        
-        for i, f_path in enumerate(huge_files, 1):
-            logging.info(f"Processing Huge File ({i}/{len(huge_files)}): {os.path.basename(f_path)}")
-            result = process_single_image(f_path)
-            logging.info(result)
+        logging.info(f"PHASE 2: Processing Huge Files {len(huge_files)} (Pool Size: {4})")
+        with Pool(processes=4, maxtasksperchild=1) as pool:
+            for result in pool.imap_unordered(process_single_image, huge_files):
+                logging.info(result)
+
     
     duration = time.time() - start_time
     print("-" * 80)

@@ -17,6 +17,7 @@ from multiprocessing import Pool, cpu_count
 from PIL import Image
 
 
+Image.MAX_IMAGE_PIXELS = None
 INPUT_FOLDER = './imagery125'
 OUTPUT_FOLDER = './imagery125_640px'
 PREFIXES_SMALL = ('2019', '2020', '2021', '2023') 
@@ -99,8 +100,6 @@ def main():
     start_time = time.time()
 
     with Pool(processes=cpu_count()) as pool:
-        # imap_unordered returns an iterator. The loop below triggers the execution.
-        # As soon as a worker finishes one image, the loop continues.
         for i, result in enumerate(pool.imap_unordered(process_single_image, files_to_process), 1):
             logging.info(f"({i}/{total_files}) {result}")
 
