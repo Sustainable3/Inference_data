@@ -27,13 +27,14 @@ os.environ['NUMEXPR_NUM_THREADS'] = '1'
 INPUT_FOLDER = './imagery125'
 OUTPUT_FOLDER = './imagery125_640px'
 LOG_FILE_PATH = './slurm-21237230.out'
-# OUTPUT_FOLDER = './imagery125_640px_2'
-# LOG_FILE_PATH = './slurm-21237263.out'
+OUTPUT_FOLDER = './imagery125_640px_2'
+LOG_FILE_PATH = './slurm-21237263.out'
 PREFIXES_SMALL = ('2019', '2020', '2021', '2023') 
 SIZE_SMALL = 640
 SIZE_LARGE = 3200
 TARGET_OUTPUT_SIZE = 640
-MAX_WORKERS = max(1, cpu_count() - 8)
+HUGE_FILE_THRESHOLD_MB = 300 
+MAX_WORKERS = max(1, cpu_count() - 4)
 QA = 92
 
 
@@ -42,8 +43,8 @@ logging.basicConfig(
     format='[%(asctime)s] [%(processName)-15s] %(message)s',
     datefmt='%H:%M:%S',
     handlers=[
-        logging.FileHandler(LOG_FILE_PATH), # Append logs to the file
-        logging.StreamHandler()             # Also print to console
+        logging.FileHandler(LOG_FILE_PATH),
+        logging.StreamHandler()
     ]
 )
 
@@ -61,24 +62,15 @@ def get_completed_files(log_path):
     """
     if not os.path.exists(log_path):
         return set()
-
-    completed_files = set()
-    
-    # Regex to capture the filename after [DONE]
-    # Matches: ... [DONE] filename.tif ...
-    regex_pattern = r"\[DONE\]\s+([a-zA-Z0-9_\-\.]+\.tif[f]?)"
-
-    try:
-        with open(log_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                if "[DONE]" in line:
-                    match = re.search(regex_pattern, line)
-                    if match:
-                        completed_files.add(match.group(1).strip())
-    except Exception as e:
-        print(f"Warning: Could not read log file: {e}")
-        
-    return completed_files
+    completed = set()
+    regex = r"\[DONE\]\s+([a-zA-Z0-9_\-\.]+\.tif[f]?)"
+    with open(log_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if "[DONE]" in line:
+                match = re.search(regex, line)
+                if match:
+                    completed.add(match.group(1).strip())
+    return completed
 
 
 def process_single_image(file_path):
@@ -95,6 +87,8 @@ def process_single_image(file_path):
         start_job = time.time()
         
         with Image.open(file_path) as img:
+            img.load() # Force load to memory to avoid disk seeking lag during crop
+            
             width, height = img.size
             tile_count = 0
             
@@ -131,31 +125,48 @@ def main():
     print(f"Reading log file to identify completed jobs: {LOG_FILE_PATH}")
     completed_files = get_completed_files(LOG_FILE_PATH)
     print(f"Found {len(completed_files)} already completed files.")
-
-    files_to_process = []
+    
+    pending_files = []
     for f in all_files:
         if f not in completed_files:
-            files_to_process.append(os.path.join(INPUT_FOLDER, f))
-
-    total_files = len(files_to_process)
-    
-    if total_files == 0:
-        print("All files in the directory are already marked as [DONE] in the log.")
+            pending_files.append(os.path.join(INPUT_FOLDER, f))
+            
+    if not pending_files:
+        print("All files completed.")
         return
 
-    print(f"Starting processing on remaining {total_files} files using {MAX_WORKERS} cores...")
+    huge_files = []
+    normal_files = []
+    
+    for f_path in pending_files:
+        size_mb = os.path.getsize(f_path) / (1024 * 1024)
+        if size_mb > HUGE_FILE_THRESHOLD_MB:
+            huge_files.append(f_path)
+        else:
+            normal_files.append(f_path)
+
+    logging.info(f"Queue Status: {len(normal_files)} normal files, {len(huge_files)} HUGE files.")
+
+    print(f"Starting processing on remaining {normal_files+huge_files} files using {MAX_WORKERS} cores...")
     print("-" * 80)
 
     start_time = time.time()
 
-    try:
-        with Pool(processes=MAX_WORKERS, maxtasksperchild=3) as pool:   
-            for i, result in enumerate(pool.imap_unordered(process_single_image, files_to_process), 1):
-                logging.info(f"({i}/{total_files}) {result}")
-                
-    except Exception as e:
-        logging.error(f"Critical System Error: {e}")
+    if normal_files:
+        logging.info(f"Processing {len(normal_files)} normal files with {MAX_WORKERS} workers...")
+        with Pool(processes=MAX_WORKERS, maxtasksperchild=7) as pool:
+            for result in pool.imap_unordered(process_single_image, normal_files):
+                logging.info(result)
 
+    if huge_files:
+        logging.info("-" * 80)
+        logging.info(f"Processing {len(huge_files)} HUGE files sequentially to save RAM...")
+        
+        for i, f_path in enumerate(huge_files, 1):
+            logging.info(f"Processing Huge File ({i}/{len(huge_files)}): {os.path.basename(f_path)}")
+            result = process_single_image(f_path)
+            logging.info(result)
+    
     duration = time.time() - start_time
     print("-" * 80)
     print(f"Batch run completed in {duration:.2f} seconds.")
