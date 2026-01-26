@@ -26,17 +26,16 @@ os.environ['NUMEXPR_NUM_THREADS'] = '1'
 
 
 INPUT_FOLDER = './imagery125'
-OUTPUT_FOLDER = './imagery125_640px'
-LOG_FILE_PATH = './slurm-21237230.out'
-# OUTPUT_FOLDER = './imagery125_640px_2'
-# LOG_FILE_PATH = './slurm-21237263.out'
+# OUTPUT_FOLDER = './imagery125_640px'
+# LOG_FILE_PATH = './slurm-21237230.out'
+OUTPUT_FOLDER = './imagery125_640px_2'
+LOG_FILE_PATH = './slurm-21237263.out'
 # LOG_FILE_PATH = 'preprocessing/slurm-21237263.out'
 # LOG_FILE_PATH = 'preprocessing/slurm-21237230.out'
 PREFIXES_SMALL = ('2019', '2020', '2021', '2023') 
 SIZE_SMALL = 640
 SIZE_LARGE = 3200
 TARGET_OUTPUT_SIZE = 640
-HUGE_FILE_THRESHOLD_MB = 300 
 MAX_WORKERS = max(1, cpu_count() - 4)
 QA = 92
 
