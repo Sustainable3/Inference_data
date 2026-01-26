@@ -7,7 +7,7 @@ equal px size (scaling)
 
 I 26
 
-MD
+from genAI adapted by MD
 '''
 
 import os
@@ -17,8 +17,9 @@ from multiprocessing import Pool, cpu_count
 from PIL import Image
 
 
-INPUT_FOLDER = './img_test'
-OUTPUT_FOLDER = './img_test_640px4'
+Image.MAX_IMAGE_PIXELS = None
+INPUT_FOLDER = './imagery125'
+OUTPUT_FOLDER = './imagery125_640px'
 PREFIXES_SMALL = ('2019', '2020', '2021', '2023') 
 SIZE_SMALL = 640
 SIZE_LARGE = 3200
@@ -48,10 +49,7 @@ def process_single_image(file_path):
     
     try:
         crop_size = get_split_size(filename)
-        
-        # Prevent PIL bomb errors for massive TIFs
         Image.MAX_IMAGE_PIXELS = None 
-        
         start_job = time.time()
         
         with Image.open(file_path) as img:
@@ -73,7 +71,7 @@ def process_single_image(file_path):
                     
                     tile.save(out_path, format="JPEG", quality=QA)
                     tile_count += 1
-                    logging.info(f"  -> Tile Saved: {out_name} (Source pos: x{x}, y{y})")
+                    # logging.info(f"  -> Tile Saved: {out_name} (Source pos: x{x}, y{y})")
             
             elapsed = time.time() - start_job
             return f"[DONE] {filename:<30} | Size: {width}x{height} | Mode: {crop_size}px->{TARGET_OUTPUT_SIZE}px | Tiles: {tile_count} | Time: {elapsed:.2f}s"
@@ -102,8 +100,6 @@ def main():
     start_time = time.time()
 
     with Pool(processes=cpu_count()) as pool:
-        # imap_unordered returns an iterator. The loop below triggers the execution.
-        # As soon as a worker finishes one image, the loop continues.
         for i, result in enumerate(pool.imap_unordered(process_single_image, files_to_process), 1):
             logging.info(f"({i}/{total_files}) {result}")
 
